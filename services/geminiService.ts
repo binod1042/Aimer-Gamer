@@ -1,9 +1,16 @@
 import { GoogleGenAI } from "@google/genai";
 import { GameStats } from "../types";
 
-// Initialize Gemini client strictly using process.env.API_KEY as per guidelines.
-// Assumes process.env.API_KEY is pre-configured and accessible.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Get API key using Vite format (NOT process.env)
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+
+if (!apiKey) {
+  console.error("❌ API key missing! Fix Vercel environment variables.");
+  throw new Error("Gemini API key is missing.");
+}
+
+// Initialize Gemini client
+const ai = new GoogleGenAI({ apiKey });
 
 export const getAiCoachingTips = async (stats: GameStats): Promise<string> => {
   try {
@@ -31,6 +38,6 @@ export const getAiCoachingTips = async (stats: GameStats): Promise<string> => {
     return result.text || "Keep practicing to generate more data!";
   } catch (error) {
     console.error("❌ Error generating AI tips:", error);
-    return "Unable to connect to AI Coach. Please check your internet connection or API limits.";
+    return "The AI Coach is currently offline or the API key is invalid.";
   }
 };
