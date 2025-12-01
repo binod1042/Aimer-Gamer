@@ -1,13 +1,13 @@
 import { GoogleGenAI } from "@google/genai";
 import { GameStats } from "../types";
 
+// Declare process to ensure TypeScript recognizes it without additional config files
+declare var process: any;
+
+// Use process.env.API_KEY as mandated by coding guidelines
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const getAiCoachingTips = async (stats: GameStats): Promise<string> => {
-  if (!process.env.API_KEY) {
-    return "API Key not configured. Unable to generate AI coaching tips.";
-  }
-
   try {
     const prompt = `
       You are a world-class Esports Aim Coach. Analyze the following player statistics from a reflex aim training session:
@@ -35,6 +35,6 @@ export const getAiCoachingTips = async (stats: GameStats): Promise<string> => {
     return response.text || "Keep practicing to generate more data for analysis!";
   } catch (error) {
     console.error("Error generating AI tips:", error);
-    return "The AI Coach is currently offline. Please try again later.";
+    return "The AI Coach is currently offline or the API key is invalid. Please try again later.";
   }
 };
