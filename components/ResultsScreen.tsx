@@ -1,14 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { GameStats } from '../types';
 import Button from './Button';
-import { RefreshCw, Home, BrainCircuit, Share2 } from 'lucide-react';
+import { RefreshCw, Home, BrainCircuit } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { getAiCoachingTips } from '../services/geminiService';
-import ReactMarkdown from 'react-markdown'; // Actually, let's keep it simple without heavy markdown lib dependency if not in prompt, but I will simulate structured text. 
-// Re-reading prompt: "Use popular and existing libraries... Do not use mock or made-up libraries". 
-// Since I cannot modify package.json to add react-markdown, I will render the AI text as plain text or simple formatting.
-// Correction: I can import libraries. I'll stick to rendering pre-line whitespace for simplicity to avoid import errors if react-markdown isn't standard in the implied env.
-// But prompt says "Use popular libraries". I will render the text directly with whitespace-pre-wrap.
 
 interface ResultsScreenProps {
   stats: GameStats;

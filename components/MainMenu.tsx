@@ -1,5 +1,5 @@
 import React from 'react';
-import { GameSettings, DEFAULT_SETTINGS } from '../types';
+import { GameSettings } from '../types';
 import Button from './Button';
 import { Crosshair, Zap, Settings, Trophy } from 'lucide-react';
 
