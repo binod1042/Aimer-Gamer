@@ -1,14 +1,10 @@
 import { GoogleGenAI } from "@google/genai";
 import { GameStats } from "../types";
 
-const GEMINI_API_KEY = process.env.API_KEY || '';
-
-// Initialize the client only if the key exists to avoid immediate errors, 
-// though robust apps should handle this gracefully.
-const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const getAiCoachingTips = async (stats: GameStats): Promise<string> => {
-  if (!GEMINI_API_KEY) {
+  if (!process.env.API_KEY) {
     return "API Key not configured. Unable to generate AI coaching tips.";
   }
 
@@ -32,7 +28,6 @@ export const getAiCoachingTips = async (stats: GameStats): Promise<string> => {
       model: 'gemini-2.5-flash',
       contents: prompt,
       config: {
-        maxOutputTokens: 300,
         temperature: 0.7,
       }
     });
