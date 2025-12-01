@@ -1,11 +1,16 @@
 import { GoogleGenAI } from "@google/genai";
 import { GameStats } from "../types";
 
-// Declare process to ensure TypeScript recognizes it without additional config files
-declare var process: any;
+// Get API key using Vite format (NOT process.env)
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
-// Use process.env.API_KEY as mandated by coding guidelines
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+if (!apiKey) {
+  console.error("❌ API key missing! Fix Vercel environment variables.");
+  throw new Error("Gemini API key is missing.");
+}
+
+// Initialize Gemini client
+const ai = new GoogleGenAI({ apiKey });
 
 export const getAiCoachingTips = async (stats: GameStats): Promise<string> => {
   try {
@@ -20,21 +25,19 @@ export const getAiCoachingTips = async (stats: GameStats): Promise<string> => {
       Average Reaction Time: ${Math.round(stats.avgReactionTime)}ms
 
       Provide 3 short, punchy, and actionable tips to help them improve. 
-      Focus on the specific weaknesses shown in the stats (e.g., if accuracy is low but speed is high, tell them to slow down).
-      Keep the tone encouraging but professional. Format as a bulleted list.
+      Focus on the specific weaknesses shown in the stats.
+      Format as a bulleted list.
     `;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+    const result = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
       contents: prompt,
-      config: {
-        temperature: 0.7,
-      }
+      config: { temperature: 0.7 }
     });
 
-    return response.text || "Keep practicing to generate more data for analysis!";
+    return result.text || "Keep practicing to generate more data!";
   } catch (error) {
-    console.error("Error generating AI tips:", error);
-    return "The AI Coach is currently offline or the API key is invalid. Please try again later.";
+    console.error("❌ Error generating AI tips:", error);
+    return "The AI Coach is currently offline or the API key is invalid.";
   }
 };
