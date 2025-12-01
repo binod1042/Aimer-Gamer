@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import GameCanvas from './components/GameCanvas';
 import MainMenu from './components/MainMenu';
 import ResultsScreen from './components/ResultsScreen';
@@ -8,7 +8,19 @@ import { Activity, Pause, Play, LogOut } from 'lucide-react';
 
 const App: React.FC = () => {
   const [gameState, setGameState] = useState<GameState>(GameState.MENU);
-  const [settings, setSettings] = useState<GameSettings>(DEFAULT_SETTINGS);
+  
+  // Initialize settings with mobile responsiveness
+  const [settings, setSettings] = useState<GameSettings>(() => {
+    // Check if running on client and if screen is small (mobile)
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      return {
+        ...DEFAULT_SETTINGS,
+        targetSize: 25 // Smaller targets for mobile screens
+      };
+    }
+    return DEFAULT_SETTINGS;
+  });
+
   const [gameStats, setGameStats] = useState<GameStats | null>(null);
   
   // Live HUD state
@@ -45,7 +57,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 overflow-hidden relative selection:bg-cyan-500/30">
+    <div className="h-[100dvh] bg-slate-950 text-slate-100 overflow-hidden relative selection:bg-cyan-500/30 touch-none">
       
       {/* Background Ambience */}
       <div className="fixed inset-0 pointer-events-none">
@@ -65,7 +77,7 @@ const App: React.FC = () => {
 
         {/* Game Canvas stays mounted during PAUSE to preserve state */}
         {(gameState === GameState.PLAYING || gameState === GameState.PAUSED) && (
-          <div className="w-full h-screen relative">
+          <div className="w-full h-full relative">
             <GameCanvas 
               settings={settings} 
               gameState={gameState} 

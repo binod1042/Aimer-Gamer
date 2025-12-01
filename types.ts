@@ -46,6 +46,6 @@ export interface GameStats {
 export const DEFAULT_SETTINGS: GameSettings = {
   duration: 60,
   difficulty: 'MEDIUM',
-  targetSize: 40,
+  targetSize: 30, // Reduced from 40 for better mobile compatibility by default
   spawnRate: 600
 };
