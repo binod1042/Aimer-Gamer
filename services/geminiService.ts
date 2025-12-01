@@ -1,24 +1,18 @@
 import { GoogleGenAI } from "@google/genai";
 import { GameStats } from "../types";
 
-// Safely access env var with optional chaining
-// @ts-ignore - Ignore potential TS warnings about import.meta for compatibility
-const apiKey = import.meta?.env?.VITE_GEMINI_API_KEY;
+// Get API key using Vite format (NOT process.env)
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
-// Don't crash app if key is missing, just warn
 if (!apiKey) {
-  console.warn("⚠️ VITE_GEMINI_API_KEY is missing. AI features will be disabled.");
+  console.error("❌ API key missing! Fix Vercel environment variables.");
+  throw new Error("Gemini API key is missing.");
 }
 
-// Initialize lazily to prevent startup crash. Only create instance if key exists.
-const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
+// Initialize Gemini client
+const ai = new GoogleGenAI({ apiKey });
 
 export const getAiCoachingTips = async (stats: GameStats): Promise<string> => {
-  // Graceful fallback if AI is not initialized
-  if (!ai) {
-    return "AI Coach unavailable: API Key not configured. Please add VITE_GEMINI_API_KEY to your environment variables.";
-  }
-
   try {
     const prompt = `
       You are a world-class Esports Aim Coach. Analyze the following player statistics from a reflex aim training session:
